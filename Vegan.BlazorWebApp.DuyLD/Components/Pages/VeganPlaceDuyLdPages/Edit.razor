@@ -1,0 +1,149 @@
+@page "/veganplaceduylds/edit"
+@using Microsoft.EntityFrameworkCore
+@using Vegan.Entities.DuyLD.Models
+@inject IDbContextFactory<Vegan.Entities.DuyLD.Models.VeganDBContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>VeganPlaceDuyLd</h2>
+<hr />
+@if (VeganPlaceDuyLd is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="VeganPlaceDuyLd" OnValidSubmit="UpdateVeganPlaceDuyLd" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="VeganPlaceDuyLd.VeganPlaceDuyLdid" value="@VeganPlaceDuyLd.VeganPlaceDuyLdid" />
+                <div class="mb-3">
+                    <label for="categoryname" class="form-label">CategoryName:</label>
+                    <InputText id="categoryname" @bind-Value="VeganPlaceDuyLd.CategoryName" class="form-control" />
+                    <ValidationMessage For="() => VeganPlaceDuyLd.CategoryName" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="categorydescription" class="form-label">CategoryDescription:</label>
+                    <InputText id="categorydescription" @bind-Value="VeganPlaceDuyLd.CategoryDescription" class="form-control" />
+                    <ValidationMessage For="() => VeganPlaceDuyLd.CategoryDescription" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="categorydisplayorder" class="form-label">CategoryDisplayOrder:</label>
+                    <InputNumber id="categorydisplayorder" @bind-Value="VeganPlaceDuyLd.CategoryDisplayOrder" class="form-control" />
+                    <ValidationMessage For="() => VeganPlaceDuyLd.CategoryDisplayOrder" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="placename" class="form-label">PlaceName:</label>
+                    <InputText id="placename" @bind-Value="VeganPlaceDuyLd.PlaceName" class="form-control" />
+                    <ValidationMessage For="() => VeganPlaceDuyLd.PlaceName" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address:</label>
+                    <InputText id="address" @bind-Value="VeganPlaceDuyLd.Address" class="form-control" />
+                    <ValidationMessage For="() => VeganPlaceDuyLd.Address" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone:</label>
+                    <InputText id="phone" @bind-Value="VeganPlaceDuyLd.Phone" class="form-control" />
+                    <ValidationMessage For="() => VeganPlaceDuyLd.Phone" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="website" class="form-label">Website:</label>
+                    <InputText id="website" @bind-Value="VeganPlaceDuyLd.Website" class="form-control" />
+                    <ValidationMessage For="() => VeganPlaceDuyLd.Website" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <InputText id="description" @bind-Value="VeganPlaceDuyLd.Description" class="form-control" />
+                    <ValidationMessage For="() => VeganPlaceDuyLd.Description" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="latitude" class="form-label">Latitude:</label>
+                    <InputNumber id="latitude" @bind-Value="VeganPlaceDuyLd.Latitude" class="form-control" />
+                    <ValidationMessage For="() => VeganPlaceDuyLd.Latitude" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="longitude" class="form-label">Longitude:</label>
+                    <InputNumber id="longitude" @bind-Value="VeganPlaceDuyLd.Longitude" class="form-control" />
+                    <ValidationMessage For="() => VeganPlaceDuyLd.Longitude" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="rating" class="form-label">Rating:</label>
+                    <InputNumber id="rating" @bind-Value="VeganPlaceDuyLd.Rating" class="form-control" />
+                    <ValidationMessage For="() => VeganPlaceDuyLd.Rating" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="createdat" class="form-label">CreatedAt:</label>
+                    <InputDate id="createdat" @bind-Value="VeganPlaceDuyLd.CreatedAt" class="form-control" />
+                    <ValidationMessage For="() => VeganPlaceDuyLd.CreatedAt" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="isactive" class="form-label">IsActive:</label>
+                    <InputCheckbox id="isactive" @bind-Value="VeganPlaceDuyLd.IsActive" class="form-check-input" />
+                    <ValidationMessage For="() => VeganPlaceDuyLd.IsActive" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/veganplaceduylds">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private long VeganPlaceDuyLdid { get; set; }
+
+    [SupplyParameterFromForm]
+    private VeganPlaceDuyLd? VeganPlaceDuyLd { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        VeganPlaceDuyLd ??= await context.VeganPlaceDuyLds.FirstOrDefaultAsync(m => m.VeganPlaceDuyLdid == VeganPlaceDuyLdid);
+
+        if (VeganPlaceDuyLd is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateVeganPlaceDuyLd()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(VeganPlaceDuyLd!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!VeganPlaceDuyLdExists(VeganPlaceDuyLd!.VeganPlaceDuyLdid))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/veganplaceduylds");
+    }
+
+    private bool VeganPlaceDuyLdExists(long veganplaceduyldid)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.VeganPlaceDuyLds.Any(e => e.VeganPlaceDuyLdid == veganplaceduyldid);
+    }
+}

@@ -1,0 +1,47 @@
+@page "/veganplaceduylds"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Vegan.Entities.DuyLD.Models
+@using Vegan.Services.DuyLD
+
+@inject IVeganPlaceServiceDuyLd VeganPlaceServiceDuyLd
+@inject IPlaceFoodServiceDuyLd PlaceFoodServiceDuyLd
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="veganplaceduylds/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="veganPlaces">
+    <PropertyColumn Property="veganplaceduyld => veganplaceduyld.CategoryName" />
+    <PropertyColumn Property="veganplaceduyld => veganplaceduyld.CategoryDescription" />
+    <PropertyColumn Property="veganplaceduyld => veganplaceduyld.CategoryDisplayOrder" />
+    <PropertyColumn Property="veganplaceduyld => veganplaceduyld.PlaceName" />
+    <PropertyColumn Property="veganplaceduyld => veganplaceduyld.Address" />
+    <PropertyColumn Property="veganplaceduyld => veganplaceduyld.Phone" />
+    <PropertyColumn Property="veganplaceduyld => veganplaceduyld.Website" />
+    <PropertyColumn Property="veganplaceduyld => veganplaceduyld.Description" />
+    <PropertyColumn Property="veganplaceduyld => veganplaceduyld.Latitude" />
+    <PropertyColumn Property="veganplaceduyld => veganplaceduyld.Longitude" />
+    <PropertyColumn Property="veganplaceduyld => veganplaceduyld.Rating" />
+    <PropertyColumn Property="veganplaceduyld => veganplaceduyld.CreatedAt" />
+    <PropertyColumn Property="veganplaceduyld => veganplaceduyld.IsActive" />
+
+    <TemplateColumn Context="veganplaceduyld">
+        <a href="@($"veganplaceduylds/edit?veganplaceduyldid={veganplaceduyld.VeganPlaceDuyLdid}")">Edit</a> |
+        <a href="@($"veganplaceduylds/details?veganplaceduyldid={veganplaceduyld.VeganPlaceDuyLdid}")">Details</a> |
+        <a href="@($"veganplaceduylds/delete?veganplaceduyldid={veganplaceduyld.VeganPlaceDuyLdid}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private IQueryable<VeganPlaceDuyLd> veganPlaces = new List<VeganPlaceDuyLd>().AsQueryable();
+
+    protected override async Task OnInitializedAsync()
+    {
+        veganPlaces = (await VeganPlaceServiceDuyLd.GetAllAsync()).AsQueryable();
+    }
+
+}

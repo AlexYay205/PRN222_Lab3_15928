@@ -1,70 +1,57 @@
 @page "/veganplaceduylds/details"
-@using Microsoft.EntityFrameworkCore
+@attribute [Authorize]
 @using Vegan.Entities.DuyLD.Models
-@inject IDbContextFactory<Vegan.Entities.DuyLD.Models.VeganDBContext> DbFactory
+@using Vegan.Services.DuyLD
+
+@inject IVeganPlaceServiceDuyLd VeganPlaceService
 @inject NavigationManager NavigationManager
 
-<PageTitle>Details</PageTitle>
+<PageTitle>Vegan Place Details</PageTitle>
 
 <h1>Details</h1>
+<h4>Vegan Place</h4>
+<hr />
 
-<div>
-    <h2>VeganPlaceDuyLd</h2>
-    <hr />
-    @if (veganplaceduyld is null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else {
-        <dl class="row">
-            <dt class="col-sm-2">CategoryName</dt>
-            <dd class="col-sm-10">@veganplaceduyld.CategoryName</dd>
-            <dt class="col-sm-2">CategoryDescription</dt>
-            <dd class="col-sm-10">@veganplaceduyld.CategoryDescription</dd>
-            <dt class="col-sm-2">CategoryDisplayOrder</dt>
-            <dd class="col-sm-10">@veganplaceduyld.CategoryDisplayOrder</dd>
-            <dt class="col-sm-2">PlaceName</dt>
-            <dd class="col-sm-10">@veganplaceduyld.PlaceName</dd>
-            <dt class="col-sm-2">Address</dt>
-            <dd class="col-sm-10">@veganplaceduyld.Address</dd>
-            <dt class="col-sm-2">Phone</dt>
-            <dd class="col-sm-10">@veganplaceduyld.Phone</dd>
-            <dt class="col-sm-2">Website</dt>
-            <dd class="col-sm-10">@veganplaceduyld.Website</dd>
-            <dt class="col-sm-2">Description</dt>
-            <dd class="col-sm-10">@veganplaceduyld.Description</dd>
-            <dt class="col-sm-2">Latitude</dt>
-            <dd class="col-sm-10">@veganplaceduyld.Latitude</dd>
-            <dt class="col-sm-2">Longitude</dt>
-            <dd class="col-sm-10">@veganplaceduyld.Longitude</dd>
-            <dt class="col-sm-2">Rating</dt>
-            <dd class="col-sm-10">@veganplaceduyld.Rating</dd>
-            <dt class="col-sm-2">CreatedAt</dt>
-            <dd class="col-sm-10">@veganplaceduyld.CreatedAt</dd>
-            <dt class="col-sm-2">IsActive</dt>
-            <dd class="col-sm-10">@veganplaceduyld.IsActive</dd>
-        </dl>
-        <div>
-            <a href="@($"/veganplaceduylds/edit?veganplaceduyldid={veganplaceduyld.VeganPlaceDuyLdid}")">Edit</a> |
-            <a href="@($"/veganplaceduylds")">Back to List</a>
-        </div>
-    }
-</div>
+@if (veganPlace is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <dl class="row">
+        <dt class="col-sm-3">Category Name</dt><dd class="col-sm-9">@veganPlace.CategoryName</dd>
+        <dt class="col-sm-3">Category Description</dt><dd class="col-sm-9">@veganPlace.CategoryDescription</dd>
+        <dt class="col-sm-3">Display Order</dt><dd class="col-sm-9">@veganPlace.CategoryDisplayOrder</dd>
+        <dt class="col-sm-3">Place Name</dt><dd class="col-sm-9">@veganPlace.PlaceName</dd>
+        <dt class="col-sm-3">Address</dt><dd class="col-sm-9">@veganPlace.Address</dd>
+        <dt class="col-sm-3">Phone</dt><dd class="col-sm-9">@veganPlace.Phone</dd>
+        <dt class="col-sm-3">Website</dt><dd class="col-sm-9">@veganPlace.Website</dd>
+        <dt class="col-sm-3">Description</dt><dd class="col-sm-9">@veganPlace.Description</dd>
+        <dt class="col-sm-3">Latitude</dt><dd class="col-sm-9">@veganPlace.Latitude</dd>
+        <dt class="col-sm-3">Longitude</dt><dd class="col-sm-9">@veganPlace.Longitude</dd>
+        <dt class="col-sm-3">Rating</dt><dd class="col-sm-9">@veganPlace.Rating</dd>
+        <dt class="col-sm-3">Created At</dt><dd class="col-sm-9">@veganPlace.CreatedAt.ToString("dd/MM/yyyy HH:mm")</dd>
+        <dt class="col-sm-3">Status</dt><dd class="col-sm-9">@(veganPlace.IsActive ? "Active" : "Inactive")</dd>
+    </dl>
+
+    <a class="btn btn-primary" href="@($"veganplaceduylds/edit?veganplaceduyldid={veganPlace.VeganPlaceDuyLdid}")">Edit</a>
+    <a class="btn btn-outline-secondary" href="veganplaceduylds">Back to List</a>
+}
 
 @code {
-    private VeganPlaceDuyLd? veganplaceduyld;
-
     [SupplyParameterFromQuery]
-    private long VeganPlaceDuyLdid { get; set; }
+    private long veganplaceduyldid { get; set; }
+
+    private VeganPlaceDuyLd? veganPlace;
 
     protected override async Task OnInitializedAsync()
     {
-        using var context = DbFactory.CreateDbContext();
-        veganplaceduyld = await context.VeganPlaceDuyLds.FirstOrDefaultAsync(m => m.VeganPlaceDuyLdid == VeganPlaceDuyLdid);
+        veganPlace = await VeganPlaceService.GetByIdAsync(veganplaceduyldid);
 
-        if (veganplaceduyld is null)
+        if (veganPlace is null)
         {
-            NavigationManager.NavigateTo("notfound");
+            NavigationManager.NavigateTo("/veganplaceduylds");
         }
     }
 }
+

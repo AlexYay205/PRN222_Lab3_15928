@@ -1,6 +1,15 @@
-﻿<Router AppAssembly="typeof(Program).Assembly">
-    <Found Context="routeData">
-        <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
-        <FocusOnNavigate RouteData="routeData" Selector="h1" />
-    </Found>
-</Router>
+<CascadingAuthenticationState>
+    <Router AppAssembly="typeof(Program).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
+                <NotAuthorized>
+                    <div class="alert alert-warning m-4">
+                        Please <a href="/Account/Login" data-enhance-nav="false">login</a> to access this page.
+                    </div>
+                </NotAuthorized>
+            </AuthorizeRouteView>
+            <FocusOnNavigate RouteData="routeData" Selector="h1" />
+        </Found>
+    </Router>
+</CascadingAuthenticationState>
+

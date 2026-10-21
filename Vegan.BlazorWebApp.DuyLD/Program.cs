@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Vegan.BlazorWebApp.DuyLD.Components;
 using Vegan.Entities.DuyLD.Models;
@@ -6,7 +7,15 @@ using Vegan.Services.DuyLD;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContextFactory<VeganDBContext>();
-builder.Services.AddQuickGridEntityFrameworkAdapter();
+builder.Services.AddRazorPages();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/Login";
+    });
+builder.Services.AddAuthorization();
+builder.Services.AddCascadingAuthenticationState();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -14,6 +23,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddScoped<IVeganPlaceServiceDuyLd, VeganPlaceServiceDuyLd>();
 builder.Services.AddScoped<IPlaceFoodServiceDuyLd, PlaceFoodServiceDuyLd>();
+builder.Services.AddScoped<ISystemUserAccountService, SystemUserAccountService>();
 
 var app = builder.Build();
 
@@ -29,7 +39,10 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+app.UseAuthentication();
+app.UseAuthorization();
 
+app.MapRazorPages();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
